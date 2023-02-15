@@ -1,0 +1,89 @@
+TEMA 7
+Administración y configuración avanzada de Linux Server 
+
+7.1 Permisos 
+chown: cambia el propietario/grupo del archivo chgrp: cambia el archivo del grupo. chmod: cambia los permisos de un archivo. 
+Recordar que existen 2 modalidades de cambios de permisos:
+-simbólica
+chmod u+rw archivo (doy permiso de lectura y escritura al usuario) chmod a+rwx
+ugoa (user , group, others ,all)
+
+-octal 111-111-111 
+
+chmod 777 archivo (todos los permisos a usuarios , grupos y otros).
+
+000-000-101 
+chmod 005 archivos
+ 
+7=111
+t (sticky bit) es un permiso especial que permite la modificación pero no mover ni borrar.
+
+En simbólico se usa la t y en octal comenzamos un 1 chmod 1777 archivo 
+
+s (set user information) es otro permiso permiso especial que confiere los mismos privilegios del propietario al usuario que ejecuta el fichero. En simbólico se usa la s y en octal el 4.
+g (set group information) es otro permiso especial que hace lo mismo que el anterior pero adquiriendo los privilegios del grupo. En simbólico es la g y en octal el 2.
+
+umask:  establece los permisos de forma predeterminada 
+umask 027
+umask u= rwx,g=rx (simbólico)
+000 010 11
+111 101 00
+rwx rx -
+
+Para establacer la máscara por defecto debemos indicar umask en el archivo "/etc/profile".
+ 
+La máscara se aplica por defecto sobre el 666 para los ficheros y 777 para directorios. 
+
+7.2 Listas de control de acceso
+Permiten mayor seguridad y amplían los permisos disponibles para cada objeto.
+Comandos:
+"setfacl" para establecer los permisos ACL de un objeto
+"getfacl" obtiene los permisos
+
+7.3 Cuotas de disco
+Sirven para evitar que un usuario colapse el almacenamiento. 
+Tiene dos límites "soft" y "hard", en el soft es cuando avisa pero deja seguir 
+almacenando y el hard cancela la posibilidad de almacenar.
+"sudo apt install quota"
+"sudo systemctl enable -now quota" 
+/etc/fstab es el archivo de cuotas 
+Añadiendo en la 4ª columna ",usrquota,grpquota"
+"sudo mount -o remount /"
+"sudo quotacheck"
+
+7.4 Programación de tareas
+podemos usar los comandos:
+"at" permite planificar tareas.
+"cron", "anacron" y "crontab" para planificarlas de forma periódica.
+Para el comando "at" hay 2 archivos:
+/etc/at.allow y /etc/at.deny
+
+Para "crontab" son los archivos:
+/etc/cron.allow y /etc/cron.deny
+En el fichero /etc/crontab están las tareas programadas del administrador.
+En /etc/spool/cron/atjobs-atspool y /var/spool/cron/crontabs están las tareas programadas de cada usuario.
+En /etc/cron.hourly, /etc/cron.daily, /etc/cron.weekly y /etc/cron.monthly están las tareas que se ejecutan cada hora, dia, semana y mes.
+Comandos
+at [hora] [fecha] [-f <fichero>]
+"at 23:59" ejecutara los comandos que pongamos  a continuación a esa hora.
+"at midnight -f tareas.txt" ejecuta las tareas que haya en el fichero.
+"atq" muestra las tareas programadas.
+"atrm" borra la tarea cuyo número se especifique.
+"cron" ejecuta automaticamente con el contenido de /etc/cron.hourly, /etc/cron.daily, /etc/cron.weekly y /etc/cron.monthly Cron se ejecuta automáticamente al iniciar el sistema.
+Comandos crontab:
+"-e" editamos el archivo de crontab
+"-l" lista el archivo
+"-r" elimina crontab
+
+7.6 Copias de seguridad
+/home
+/root
+/etc
+/var/log
+Podemos hacerlo a mano usando programas de compresión: gzip2, 7zip, gzip y tar.
+Si queremos automatizar las copias de seguridad usaremos contrab.
+7.23
+sudo apt update
+sudo apt install quota sudo systemctl enable -now quota sudo gedit /etc/fstab
+Donde esté la participación principal "/" después de ro,usrquota sudo mount -o remount /  sudo quotacheck -cvgm / sudo quotaon -v /
+Si todo ha ido bien en / tendremos los archivos aquota.group y aquota.user

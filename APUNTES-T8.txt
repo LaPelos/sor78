@@ -1,0 +1,105 @@
+TEMA 8
+8.1 Monitorización del sistema
+Primero vamos a instalar el monitor del sistema:
+"sudo apt install gnome-system-monitor"
+Tenemos 3 apartados:
+? proceso
+Podemos ver: estado, porcentaje de uso de CPU, prioridad, ID, memoria, etc.
+La prioridad oscila entre -20 (máxima) y 19 (mínima). Por defecto es 0.
+Un proceso puede estar en segundo plano o activo.
+? Recursos
+Podemos ver el uso de CPU, memoria y red.
+? Sistema de archivos
+
+8.1.2 Comandos para la administración y monitorización del sistema
+? ps
+Informa del estado de los procesos (PID identificador del proceso, TTY terminal donde esta ejecutándose, CMD programa que lo inició).
+-A muestra todos los procesos
+-l formato largo
+-h sin cabecera
+-o selecciona las columnas que muestra
+-u información sobre el usuario
+La columna stat indica si el proceso esta R (ejecutándose), S (durmiendo), T (detenido).
+? top
+Muestra los procesos actualizando la información cada cierto tiempo.
+Top -d 1 -p 1,2,3
+Mostraría la información de los procesos con PID 1,2 y 3 y actualizaría la información cada segundo
+? htop
+versión mejorada de top
+sudo apt install htop htop -d 20 -u usuario
+Muestra información de los procesos del "usuario" actualizándola cada 2 segundos.
+Por cada proceso en ejecución habrá un directorio en /proc con su PID y que contiene sus ficheros asociados.
+? nohup &
+Continua la ejecución aunque cerremos el terminal. Ademas con & el comando se ejecuta en segundo plano.
+Nohup ping 8.8.8.8 &
+Ejecutará un ping en segundo plano aunque cerremos la terminal y guardara en el archivo nohup.out
+? nice y renice
+Sube o baja la prioridad de un proceso. Con la opción -n "n" indicamos la prioridad.
+? jobs
+Muestra los procesos asociados al terminal.
+? fg
+Manda a primer plano un proceso que esté en segundo plano.
+? bg
+Manda a segundo plano un proceso. Pasaría de segundo plano detenido a "en ejecución".
+? kill
+Mata el proceso que indiquemos.
+? killall
+Mata todos los procesos asociados a un programa.
+? uptime
+Tiempo en funcionamiento y carga del sistema provocada por un proceso.
+? free
+Información de la memoria y la partición swap.
+? ss y netstat
+Información de la red.
+? traceroute
+Muestra la ruta para llegar a un equipo.
+
+8.2 Servicios
+Podemos usar el comando systemctl o el script service. Un servicio es un proceso que se ejecuta en segundo plano a la espera de ser utilizado por el usuario.
+Servicios típicos: gdm, kdm, cups, NetworkManager, avahi-daemon, samba, acpid, ard, crod, bluetooth, alsa-restore, dbus, snapd.
+Para comprobar el estado de un servicio:
+systemctl status servicio
+
+8.3 Inicio y fin de sesión.
+Al encender se cargan siempre algunos servicios y aplicaciones. Podemos evitar que ciertos programas se ejecuten en la aplicación "Preferencia de las aplicaciones al inicio".
+
+8.3.1 Scripts de inicio y fin de sesión
+? De inicio
+/etc/environments
+/etc/profile
+/etc/bash.bashrc
+Se ejecutan al iniciar sesión.
+/.bash_profile
+/.bash_login
+/.profile
+Se ejecutan para cada usuario.
+bashrc se ejecuta cada vez que se invoca al shell, y ademas /.bashrc para cada usuario.
+? Fin de sesión se lee .bash_logout
+
+8.3.2 Inicio
+El sistema de inicio de Ubuntu es systemd con PID 1.
+Existen diferentes configuraciones de arranque para systemd.
+1 apagar el equipo
+2 arranque en modo monousuario root
+3 arranque multiusuario sin red
+4 arranque multiusuario con red
+5 arranque multiusuario con red
+6 arranque multiusuario con red e interfaz gráfica6 reinicia el equipo
+En el nivel 5 es el estándar.
+Para cambiar el nivel al usamos el comando init (init 1 para monousuario root). Tambien podemos cambiar el nivel con systemctl.
+
+8.3.3 Comandos para terminar la sesión
+halt y poweroff paran el equipo reboot ? reinicio shutdown -h suspende el sistema shutdown -r reinicia
+8.4 Rendimiento del sistema
+Para mejorar el rendimiento podemos;
+? Desinstalar paquetes que no se usan.
+? Desinstalar servicios
+Podemos ver la carga promedio del sistema con el comando top y htop (está entre el 0 y 10, y aparece al final de la primera línea).
+
+8.4.2 Visor de sucesos
+sudo apt install gnome-system-log
+Permite ver los archivos .log de /var/log
+/var/log/apt/history.log registro de los paquete instalados.
+/var/log/auth.log contiene los intentos de autenticación en el sistema.
+? dmesg muestra los mensajes del sistema.
+? journalctl muestra la información de los archivos .log
